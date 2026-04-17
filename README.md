@@ -1076,14 +1076,14 @@ Rolling z-score was implemented successfully, but for this dataset it produced u
 * `annual_summary_stats.csv`
 * `annual_anomaly_hints.csv`
 
-## Z-score
+## Z-score (in USE)
 
 * `zscore_feature_selection.csv`
 * `annual_financials_zscores.csv`
 * `zscore_anomalies_long.csv`
 * `zscore_yearly_summary.csv`
 
-## Rolling z-score
+## Rolling z-score (not in USE)
 
 * `rolling_zscore_feature_selection.csv`
 * `annual_financials_rolling_zscores.csv`
@@ -1195,24 +1195,6 @@ If you want, I can also turn this into a **final polished README version** with:
 - troubleshooting section,
 - and cleaner formatting for GitHub.
 ```
-# Docker Setup
-
-This project can be run inside Docker so teammates do not need to manually recreate the full Python environment.
-
-## Why use Docker?
-
-Docker helps the team run the same backend with:
-- the same Python version
-- the same dependencies
-- the same startup command
-- the same exposed API port
-
-For this project, Docker is mainly useful for:
-- local team development
-- easier onboarding
-- avoiding dependency mismatch issues
-
----
 
 ## Files used for Docker
 
@@ -1222,15 +1204,6 @@ The project uses these files in the root directory:
 - `compose.yaml`
 - `.dockerignore`
 - `.env.example`
-
----
-
-## Prerequisites
-
-Before running the containerized project, make sure you have:
-
-- Docker installed
-- Docker Compose available through `docker compose`
 
 ---
 
