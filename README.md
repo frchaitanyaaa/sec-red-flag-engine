@@ -1215,3 +1215,34 @@ Example:
 
 ```env id="v4jley"
 SEC_USER_AGENT=Your Name your_email@example.com
+
+---
+
+# Frontend Dashboard (Next.js)
+
+A production-style dashboard is available in `frontend/` with:
+
+- Next.js + TypeScript
+- Tailwind CSS
+- Company search workflow
+- Company overview, annual financials, method insights, and year drilldown views
+
+## Frontend setup
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The app runs by default at `http://localhost:3000`.
+
+## Frontend environment variables
+
+Create `frontend/.env.local`:
+
+```env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+```
+
+This should point to your running FastAPI backend.
