@@ -1,4 +1,8 @@
 from __future__ import annotations
+
+from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
+
 from src.api.schemas import (
     AnalyzeRequest,
     AnalyzeResponse,
@@ -7,10 +11,6 @@ from src.api.schemas import (
     CombinedRiskResponse,
     CompanySearchResponse,
 )
-
-from fastapi import FastAPI, HTTPException, Query
-
-from src.api.schemas import AnalyzeRequest, AnalyzeResponse
 from src.services.pipeline_service import (
     get_annual_financials_service,
     get_beneish_service,
@@ -24,6 +24,14 @@ app = FastAPI(
     title="SEC Red Flag Engine API",
     version="0.1.0",
     description="Quantitative SEC 10-K anomaly engine using Z-score, Beneish M-score, and Isolation Forest.",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
