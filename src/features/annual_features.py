@@ -114,3 +114,4 @@ def build_anomaly_hints(df: pd.DataFrame, yoy_threshold: float = 0.25) -> pd.Dat
     out = pd.DataFrame(rows)
     out = out.sort_values(["abs_value", "fiscal_year"], ascending=[False, True]).reset_index(drop=True)
     return out
+

@@ -60,6 +60,8 @@ def build_beneish_features(df: pd.DataFrame) -> pd.DataFrame:
     for col in numeric_cols:
         if col in out.columns:
             out[col] = pd.to_numeric(out[col], errors="coerce")
+        else:
+            out[col] = np.nan
 
     gross_profit = first_existing_numeric(out, ["gross_profit"])
     cogs = first_existing_numeric(out, ["cogs"])
@@ -91,16 +93,34 @@ def build_beneish_features(df: pd.DataFrame) -> pd.DataFrame:
     out["total_debt_final"] = total_debt
     out["total_debt_used_liabilities_proxy"] = liabilities_proxy_mask.fillna(False)
 
+    # Safe base ratios
     out["receivables_to_revenue_raw"] = safe_divide(out["receivables"], out["revenue"])
     out["gross_margin_raw"] = safe_divide(out["gross_profit_final"], out["revenue"])
-    out["asset_quality_raw"] = 1 - safe_divide(out["current_assets"] + out["ppe"], out["total_assets"])
-    out["depreciation_rate_raw"] = safe_divide(out["depreciation"], out["depreciation"] + out["ppe"])
-    out["sga_to_revenue_raw"] = safe_divide(out["sga"], out["revenue"])
     out["debt_to_assets_raw"] = safe_divide(out["total_debt_final"], out["total_assets"])
-    out["tata"] = safe_divide(out["net_income"] - out["cfo"], out["total_assets"])
-    out["tata_uses_net_income_proxy"] = (
-        out["net_income"].notna() & out["cfo"].notna() & out["total_assets"].notna()
-    )
+
+    if {"current_assets", "ppe", "total_assets"}.issubset(out.columns):
+        out["asset_quality_raw"] = 1 - safe_divide(out["current_assets"] + out["ppe"], out["total_assets"])
+    else:
+        out["asset_quality_raw"] = np.nan
+
+    if {"depreciation", "ppe"}.issubset(out.columns):
+        out["depreciation_rate_raw"] = safe_divide(out["depreciation"], out["depreciation"] + out["ppe"])
+    else:
+        out["depreciation_rate_raw"] = np.nan
+
+    if {"sga", "revenue"}.issubset(out.columns):
+        out["sga_to_revenue_raw"] = safe_divide(out["sga"], out["revenue"])
+    else:
+        out["sga_to_revenue_raw"] = np.nan
+
+    if {"net_income", "cfo", "total_assets"}.issubset(out.columns):
+        out["tata"] = safe_divide(out["net_income"] - out["cfo"], out["total_assets"])
+        out["tata_uses_net_income_proxy"] = (
+            out["net_income"].notna() & out["cfo"].notna() & out["total_assets"].notna()
+        )
+    else:
+        out["tata"] = np.nan
+        out["tata_uses_net_income_proxy"] = False
 
     out["dsri"] = safe_divide(
         out["receivables_to_revenue_raw"],
@@ -163,7 +183,6 @@ def build_beneish_features(df: pd.DataFrame) -> pd.DataFrame:
     out.loc[complete_mask & out["beneish_flag"], "beneish_label"] = "flagged"
 
     return out
-
 
 def build_beneish_summary(df: pd.DataFrame) -> pd.DataFrame:
     keep_cols = [

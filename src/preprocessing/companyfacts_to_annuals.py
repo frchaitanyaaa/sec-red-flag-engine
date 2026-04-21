@@ -267,6 +267,13 @@ def build_annual_financials_wide(
     wide_df.columns.name = None
     wide_df = wide_df.sort_values("fiscal_year").reset_index(drop=True)
 
+    # Ensure every expected metric exists as a column,
+    # even if the company does not report it.
+    expected_metrics = list(METRIC_CONFIG.keys())
+    for metric in expected_metrics:
+        if metric not in wide_df.columns:
+            wide_df[metric] = pd.NA
+
     cik = str(companyfacts.get("cik", "")).zfill(10)
     entity_name = companyfacts.get("entityName", "")
 
